@@ -79,8 +79,10 @@
     
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        _managedObjectContext = [[NSManagedObjectContext alloc] init];
-        [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+      NSManagedObjectContext *saveContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+      saveContext.persistentStoreCoordinator = self.persistentStoreCoordinator;
+      _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+      _managedObjectContext.parentContext = saveContext;
     }
     return _managedObjectContext;
 }
